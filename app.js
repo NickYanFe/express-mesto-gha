@@ -24,11 +24,10 @@ async function start() {
   try {
     await mongoose.connect(baseMongoUrl);
     await app.listen(PORT);
-    // await console.log(`app listening on port${PORT}`)
+    await console.log(`app listening on port${PORT}`);
   } catch (err) {
-    // console.log(err);
+    console.log(err);
   }
 }
 
-start();
-// .then(() => console.log(`Приложение успешно запущенно!\n${baseMongoUrl}\nPort: ${PORT}`));
+start().then(() => console.log(`Приложение успешно запущенно!\n${baseMongoUrl}\nPort: ${PORT}`));
