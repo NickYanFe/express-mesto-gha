@@ -75,7 +75,7 @@ module.exports.addLike = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(400).send({
-          message: "Для установки 'лайка' переданы некорректные данные.",
+          message: 'Для установки лайка переданы некорректные данные.',
         });
       }
 
