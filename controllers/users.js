@@ -26,7 +26,7 @@ module.exports.getUserById = (req, res) => {
       if (err.name === 'DocumentNotFoundError') {
         return res
           .status(404)
-          .send({ message: 'Пользователь с данным _id не найден.' });
+          .send({ message: 'Пользователь c данным _id не найден.' });
       }
 
       return res.status(500).send({ message: err.message });
@@ -85,7 +85,7 @@ module.exports.updateUser = (req, res) => {
       if (err.name === 'DocumentNotFoundError') {
         return res
           .status(404)
-          .send({ message: 'Пользователь с данным _id не найден' });
+          .send({ message: 'Пользователь c данным _id не найден' });
       }
 
       return res.status(500).send({ message: err.message });
@@ -118,7 +118,7 @@ module.exports.updateAvatar = (req, res) => {
       if (err.name === 'DocumentNotFoundError') {
         return res
           .status(404)
-          .send({ message: 'Аватар пользователя с данным _id не найден' });
+          .send({ message: 'Аватар пользователя c данным _id не найден' });
       }
 
       return res.status(500).send({ message: err.message });
