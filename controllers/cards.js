@@ -1,5 +1,4 @@
 const cardSchema = require('../models/card');
-// const validator = require("validator");
 
 module.exports.getCards = (req, res) => {
   cardSchema
