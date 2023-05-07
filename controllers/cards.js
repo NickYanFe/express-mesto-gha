@@ -1,4 +1,4 @@
-const cardSchema = require("../models/card");
+const cardSchema = require('../models/card');
 // const validator = require("validator");
 
 module.exports.getCards = (req, res) => {
@@ -20,9 +20,9 @@ module.exports.createCard = (req, res) => {
     })
     .then((card) => res.status(201).send(card))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         res.status(400).send({
-          message: "Для создания карточки переданы некорректные данные",
+          message: 'Для создания карточки переданы некорректные данные',
         });
       } else {
         res.status(500).send({ message: err.message });
@@ -39,15 +39,15 @@ module.exports.deleteCard = (req, res) => {
       if (!card) {
         return res
           .status(404)
-          .send({ message: "Карточка c данным _id не найдена." });
+          .send({ message: 'Карточка c данным _id не найдена.' });
       }
 
       return res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         res.status(400).send({
-          message: "Для удаления карточки переданы некорректные данные.",
+          message: 'Для удаления карточки переданы некорректные данные.',
         });
       } else {
         res.status(500).send({ message: err.message });
@@ -60,19 +60,20 @@ module.exports.addLike = (req, res) => {
     .findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } },
+      // eslint-disable-next-line comma-dangle
       { new: true }
     )
     .then((card) => {
       if (!card) {
         return res
           .status(404)
-          .send({ message: "Карточка c данным _id не найдена." });
+          .send({ message: 'Карточка c данным _id не найдена.' });
       }
 
       return res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         return res.status(400).send({
           message: "Для установки 'лайка' переданы некорректные данные.",
         });
@@ -87,19 +88,19 @@ module.exports.deleteLike = (req, res) => {
     .findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
-      { new: true }
+      { new: true },
     )
     .then((card) => {
       if (!card) {
         return res
           .status(404)
-          .send({ message: "Карточка c данным _id не найдена." });
+          .send({ message: 'Карточка c данным _id не найдена.' });
       }
 
       return res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         return res
           .status(400)
           .send({

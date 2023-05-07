@@ -1,4 +1,4 @@
-const userSchema = require("../models/user");
+const userSchema = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
   userSchema
@@ -15,18 +15,18 @@ module.exports.getUserById = (req, res) => {
     .orFail()
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         return res
           .status(400)
           .send({
-            message: "Для поиска пользователя переданы некорректные данные.",
+            message: 'Для поиска пользователя переданы некорректные данные.',
           });
       }
 
-      if (err.name === "DocumentNotFoundError") {
+      if (err.name === 'DocumentNotFoundError') {
         return res
           .status(404)
-          .send({ message: "Пользователь с данным _id не найден." });
+          .send({ message: 'Пользователь с данным _id не найден.' });
       }
 
       return res.status(500).send({ message: err.message });
@@ -44,11 +44,11 @@ module.exports.createUser = (req, res) => {
     })
     .then((user) => res.status(201).send(user))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         res
           .status(400)
           .send({
-            message: "Для создания пользователя переданы некорректные данные.",
+            message: 'Для создания пользователя переданы некорректные данные.',
           });
       } else {
         res.status(500).send({ message: err.message });
@@ -69,23 +69,23 @@ module.exports.updateUser = (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     )
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === "CastError" || err.name === "ValidationError") {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         return res
           .status(400)
           .send({
-            message: "При обновлении профиля пользователя переданы некорректные данные",
+            message: 'При обновлении профиля пользователя переданы некорректные данные',
           });
       }
 
-      if (err.name === "DocumentNotFoundError") {
+      if (err.name === 'DocumentNotFoundError') {
         return res
           .status(404)
-          .send({ message: "Пользователь с данным _id не найден" });
+          .send({ message: 'Пользователь с данным _id не найден' });
       }
 
       return res.status(500).send({ message: err.message });
@@ -102,23 +102,23 @@ module.exports.updateAvatar = (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     )
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === "CastError" || err.name === "ValidationError") {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         return res
           .status(400)
           .send({
-            message: "При обновлении аватара пользователя переданы некорректные данные",
+            message: 'При обновлении аватара пользователя переданы некорректные данные',
           });
       }
 
-      if (err.name === "DocumentNotFoundError") {
+      if (err.name === 'DocumentNotFoundError') {
         return res
           .status(404)
-          .send({ message: "Аватар пользователя с данным _id не найден" });
+          .send({ message: 'Аватар пользователя с данным _id не найден' });
       }
 
       return res.status(500).send({ message: err.message });
