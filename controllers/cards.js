@@ -24,7 +24,8 @@ module.exports.createCard = (req, res) => {
           message: 'Для создания карточки переданы некорректные данные',
         });
       } else {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({ err });
+        console.log({ message: err.message });
       }
     });
 };
@@ -49,7 +50,8 @@ module.exports.deleteCard = (req, res) => {
           message: 'Для удаления карточки переданы некорректные данные.',
         });
       } else {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({ err });
+        console.log({ message: err.message });
       }
     });
 };
@@ -78,7 +80,10 @@ module.exports.addLike = (req, res) => {
         });
       }
 
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(500)
+        .send({ err })
+        .console.log({ message: err.message });
     });
 };
 
@@ -100,11 +105,9 @@ module.exports.deleteLike = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res
-          .status(400)
-          .send({
-            message: "Для удаления 'лайка' переданы некорректные данные.",
-          });
+        return res.status(400).send({
+          message: "Для удаления 'лайка' переданы некорректные данные.",
+        });
       }
 
       return res.status(500).send({ message: err.message });

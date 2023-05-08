@@ -4,7 +4,10 @@ module.exports.getUsers = (req, res) => {
   userSchema
     .find({})
     .then((users) => res.send(users))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      res.status(500).send({ err });
+      console.log({ message: err.message });
+    });
 };
 
 module.exports.getUserById = (req, res) => {
@@ -16,11 +19,9 @@ module.exports.getUserById = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res
-          .status(400)
-          .send({
-            message: 'Для поиска пользователя переданы некорректные данные.',
-          });
+        return res.status(400).send({
+          message: 'Для поиска пользователя переданы некорректные данные.',
+        });
       }
 
       if (err.name === 'DocumentNotFoundError') {
@@ -29,7 +30,10 @@ module.exports.getUserById = (req, res) => {
           .send({ message: 'Пользователь c данным _id не найден.' });
       }
 
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(500)
+        .send({ err })
+        .console.log({ message: err.message });
     });
 };
 
@@ -45,13 +49,12 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res
-          .status(400)
-          .send({
-            message: 'Для создания пользователя переданы некорректные данные.',
-          });
+        res.status(400).send({
+          message: 'Для создания пользователя переданы некорректные данные.',
+        });
       } else {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({ err });
+        console.log({ message: err.message });
       }
     });
 };
@@ -74,12 +77,11 @@ module.exports.updateUser = (req, res) => {
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        return res
-          .status(400)
-          .send({
-            message: 'При обновлении профиля пользователя переданы некорректные данные',
-          });
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({
+          message:
+            'При обновлении профиля пользователя переданы некорректные данные',
+        });
       }
 
       if (err.name === 'DocumentNotFoundError') {
@@ -88,7 +90,10 @@ module.exports.updateUser = (req, res) => {
           .send({ message: 'Пользователь c данным _id не найден' });
       }
 
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(500)
+        .send({ err })
+        .console.log({ message: err.message });
     });
 };
 
@@ -107,12 +112,11 @@ module.exports.updateAvatar = (req, res) => {
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        return res
-          .status(400)
-          .send({
-            message: 'При обновлении аватара пользователя переданы некорректные данные',
-          });
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({
+          message:
+            'При обновлении аватара пользователя переданы некорректные данные',
+        });
       }
 
       if (err.name === 'DocumentNotFoundError') {
@@ -120,7 +124,9 @@ module.exports.updateAvatar = (req, res) => {
           .status(404)
           .send({ message: 'Аватар пользователя c данным _id не найден' });
       }
-
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(500)
+        .send({ err })
+        .console.log({ message: err.message });
     });
 };
