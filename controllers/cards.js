@@ -49,8 +49,16 @@ module.exports.deleteCard = (req, res) => {
       return res.status(200).send(card);
     })
     .catch((err) => {
-      res.status(SERVER_ERROR).send({ err });
-      console.log({ message: err.message });
+      if (err.name === 'CastError') {
+        return res.status(BAD_REQUEST).send({
+          message: "'Карточка c данным _id не найдена.",
+        });
+      }
+
+      return res
+        .status(SERVER_ERROR)
+        .send({ err })
+        .console.log({ message: err.message });
     });
 };
 
@@ -70,7 +78,18 @@ module.exports.addLike = (req, res) => {
 
       return res.status(200).send(card);
     })
-    .catch((err) => res.status(SERVER_ERROR).send({ err }).console.log({ message: err.message }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(BAD_REQUEST).send({
+          message: 'Для установки лайка переданы некорректные данные.',
+        });
+      }
+
+      return res
+        .status(SERVER_ERROR)
+        .send({ err })
+        .console.log({ message: err.message });
+    });
 };
 
 module.exports.deleteLike = (req, res) => {
@@ -89,5 +108,16 @@ module.exports.deleteLike = (req, res) => {
 
       return res.status(200).send(card);
     })
-    .catch((err) => res.status(SERVER_ERROR).send({ err }).console.log({ message: err.message }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(BAD_REQUEST).send({
+          message: "Для удаления 'лайка' переданы некорректные данные.",
+        });
+      }
+
+      return res
+        .status(SERVER_ERROR)
+        .send({ err })
+        .console.log({ message: err.message });
+    });
 };

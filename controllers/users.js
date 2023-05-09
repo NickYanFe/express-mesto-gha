@@ -19,6 +19,10 @@ module.exports.getUserById = (req, res) => {
     .orFail()
     .then((user) => res.send(user))
     .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(BAD_REQUEST)
+          .send({ message: 'Для поиска пользователя переданы некорректные данные' });
+      }
       if (err.name === 'DocumentNotFoundError') {
         return res
           .status(NOT_FOUND)
