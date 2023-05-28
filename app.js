@@ -5,7 +5,10 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 const router = require('./routes/router');
 const { createUser, login } = require('./controllers/users');
-const { validationCreateUser, validationLogin } = require('./middlewares/validations');
+const {
+  validationCreateUser,
+  validationLogin,
+} = require('./middlewares/validations');
 const handleErrors = require('./middlewares/handleErrors');
 
 const { baseMongoUrl = 'mongodb://127.0.0.1:27017/mestodb', PORT = 3000 } = process.env;

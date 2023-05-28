@@ -1,7 +1,12 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken"); // импортируем модуль jsonwebtoken
-const userSchema = require("../models/user");
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR, CONFLICT_ERROR } = require("../utils/errors");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken'); // импортируем модуль jsonwebtoken
+const userSchema = require('../models/user');
+const {
+  BAD_REQUEST,
+  NOT_FOUND,
+  SERVER_ERROR,
+  CONFLICT_ERROR,
+} = require('../utils/errors');
 
 module.exports.getUsers = (req, res) => {
   userSchema
@@ -21,15 +26,15 @@ module.exports.getUserById = (req, res) => {
     .orFail()
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({
-          message: "Для поиска пользователя переданы некорректные данные",
+          message: 'Для поиска пользователя переданы некорректные данные',
         });
       }
-      if (err.name === "DocumentNotFoundError") {
+      if (err.name === 'DocumentNotFoundError') {
         return res
           .status(NOT_FOUND)
-          .send({ message: "Пользователь c данным _id не найден." });
+          .send({ message: 'Пользователь c данным _id не найден.' });
       }
 
       return res
@@ -44,20 +49,22 @@ module.exports.getUser = (req, res, next) => {
     .findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NOT_FOUND("Пользователь не найден");
+        throw new NOT_FOUND('Пользователь не найден');
       }
       res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        next(BAD_REQUEST("Переданы некорректные данные"));
+      if (err.name === 'CastError') {
+        next(BAD_REQUEST('Переданы некорректные данные'));
       } else {
         next(err);
       }
     });
 };
 module.exports.createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
   bcrypt
     .hash(password, 10)
@@ -70,27 +77,25 @@ module.exports.createUser = (req, res, next) => {
           email,
           password: hash,
         })
-        .then(() =>
-          res.status(201).send({
-            data: {
-              name,
-              about,
-              avatar,
-              email,
-            },
-          })
-        )
+        .then(() => res.status(201).send({
+          data: {
+            name,
+            about,
+            avatar,
+            email,
+          },
+        }))
         .catch((err) => {
           if (err.code === 11000) {
             return next(
-              new CONFLICT_ERROR("Пользователь с таким email уже существует")
+              new CONFLICT_ERROR('Пользователь с таким email уже существует'),
             );
           }
-          if (err.name === "ValidationError") {
+          if (err.name === 'ValidationError') {
             return next(
               new BAD_REQUEST(
-                "Переданы некорректные данные при создании пользователя"
-              )
+                'Переданы некорректные данные при создании пользователя',
+              ),
             );
           }
           return next(err);
@@ -138,22 +143,22 @@ module.exports.updateUser = (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     )
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({
           message:
-            "При обновлении профиля пользователя переданы некорректные данные",
+            'При обновлении профиля пользователя переданы некорректные данные',
         });
       }
 
-      if (err.name === "DocumentNotFoundError") {
+      if (err.name === 'DocumentNotFoundError') {
         return res
           .status(NOT_FOUND)
-          .send({ message: "Пользователь c данным _id не найден" });
+          .send({ message: 'Пользователь c данным _id не найден' });
       }
 
       return res
@@ -173,22 +178,22 @@ module.exports.updateAvatar = (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     )
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({
           message:
-            "При обновлении аватара пользователя переданы некорректные данные",
+            'При обновлении аватара пользователя переданы некорректные данные',
         });
       }
 
-      if (err.name === "DocumentNotFoundError") {
+      if (err.name === 'DocumentNotFoundError') {
         return res
           .status(NOT_FOUND)
-          .send({ message: "Аватар пользователя c данным _id не найден" });
+          .send({ message: 'Аватар пользователя c данным _id не найден' });
       }
       return res
         .status(SERVER_ERROR)
@@ -203,8 +208,8 @@ module.exports.login = (req, res, next) => {
   return userSchema
     .findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, "secret-JWT-token", {
-        expiresIn: "7d",
+      const token = jwt.sign({ _id: user._id }, 'secret-JWT-token', {
+        expiresIn: '7d',
       });
       res.send({ token });
     })
