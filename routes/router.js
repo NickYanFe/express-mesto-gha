@@ -6,8 +6,11 @@ const cardsRouter = require('./cards');
 
 router.use('/users', usersRouter);
 router.use('/cards', cardsRouter);
-router.use('/*', (req, res) => {
-  res.status(NOT_FOUND).send({ message: '404: Ошибка!' });
+router.use('/*', (req, res, next) => {
+  next(new NOT_FOUND('404: Ошибка! Данные не найдены!'));
 });
+
+// router.use('/signin', login);
+// router.use('/signup', createUser);
 
 module.exports = router;
