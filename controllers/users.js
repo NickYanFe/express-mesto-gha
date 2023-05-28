@@ -4,43 +4,40 @@ const userSchema = require('../models/user');
 const {
   BAD_REQUEST,
   NOT_FOUND,
-  SERVER_ERROR,
+  // SERVER_ERROR,
   CONFLICT_ERROR,
 } = require('../utils/errors');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   userSchema
     .find({})
-    .then((users) => res.send(users))
-    .catch((err) => {
-      res.status(SERVER_ERROR).send({ err });
-      console.log({ message: err.message });
-    });
+    .then((users) => res.status(200).send(users))
+    .catch(next);
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   const { userId } = req.params;
 
   userSchema
     .findById(userId)
     .orFail()
-    .then((user) => res.send(user))
+    .then((user) => {
+      if (!user) {
+        throw new NOT_FOUND('Пользователь c данным _id не найден.');
+      }
+      res.send({ data: user });
+    })
+
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).send({
-          message: 'Для поиска пользователя переданы некорректные данные',
-        });
-      }
-      if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: 'Пользователь c данным _id не найден.' });
+        return next(
+          new BAD_REQUEST(
+            'Для поиска пользователя переданы некорректные данные',
+          ),
+        );
       }
 
-      return res
-        .status(SERVER_ERROR)
-        .send({ err })
-        .console.log({ message: err.message });
+      return next(err);
     });
 };
 
@@ -94,7 +91,7 @@ module.exports.createUser = (req, res, next) => {
           if (err.name === 'ValidationError') {
             return next(
               new BAD_REQUEST(
-                'Переданы некорректные данные при создании пользователя',
+                'Переданы некорректные данные для создания пользователя',
               ),
             );
           }
@@ -130,7 +127,7 @@ module.exports.createUser = (req, res, next) => {
 //     });
 // };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
 
   userSchema
@@ -145,30 +142,23 @@ module.exports.updateUser = (req, res) => {
         runValidators: true,
       },
     )
-    .orFail()
+    .orFail(() => {
+      throw new NOT_FOUND('Пользователь с данным _id не найден');
+    })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(BAD_REQUEST).send({
-          message:
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
+        return next(
+          new BAD_REQUEST(
             'При обновлении профиля пользователя переданы некорректные данные',
-        });
+          ),
+        );
       }
-
-      if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: 'Пользователь c данным _id не найден' });
-      }
-
-      return res
-        .status(SERVER_ERROR)
-        .send({ err })
-        .console.log({ message: err.message });
+      return next(err);
     });
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   userSchema
@@ -180,25 +170,19 @@ module.exports.updateAvatar = (req, res) => {
         runValidators: true,
       },
     )
-    .orFail()
+    .orFail(() => {
+      throw new NOT_FOUND('Аватар пользователя с указанным _id не найден');
+    })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(BAD_REQUEST).send({
-          message:
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
+        return next(
+          new BAD_REQUEST(
             'При обновлении аватара пользователя переданы некорректные данные',
-        });
+          ),
+        );
       }
-
-      if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: 'Аватар пользователя c данным _id не найден' });
-      }
-      return res
-        .status(SERVER_ERROR)
-        .send({ err })
-        .console.log({ message: err.message });
+      return next(err);
     });
 };
 
