@@ -85,7 +85,7 @@ module.exports.createUser = (req, res, next) => {
         .catch((err) => {
           if (err.code === 11000) {
             return next(
-              new CONFLICT_ERROR('Пользователь с таким email уже существует'),
+              new CONFLICT_ERROR('Пользователь c таким email уже существует'),
             );
           }
           if (err.name === 'ValidationError') {
@@ -100,32 +100,6 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch(next);
 };
-
-// module.exports.createUser = (req, res) => {
-//   const {
-//     name, about, avatar, email, password,
-//   } = req.body;
-
-//   userSchema
-//     .create({
-//       name,
-//       about,
-//       avatar,
-//       email,
-//       password,
-//     })
-//     .then((user) => res.status(201).send(user))
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         res.status(BAD_REQUEST).send({
-//           message: 'Для создания пользователя переданы некорректные данные.',
-//         });
-//       } else {
-//         res.status(SERVER_ERROR).send({ err });
-//         console.log({ message: err.message });
-//       }
-//     });
-// };
 
 module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;

@@ -8,13 +8,13 @@ const validationUrl = (url) => {
   if (validate) {
     return url;
   }
-  throw new BAD_REQUEST('Некорректный URL адрес');
+  throw new BAD_REQUEST('Некорректный URL');
 };
 
 const validationId = (id) => {
   const regex = /^[0-9a-fA-F]{24}$/;
   if (regex.test(id)) return id;
-  throw new BAD_REQUEST('Некорректный id');
+  throw new BAD_REQUEST('Некорректный ID');
 };
 
 module.exports.validationCreateUser = celebrate({
