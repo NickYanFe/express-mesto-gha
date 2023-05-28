@@ -1,17 +1,14 @@
 const cardSchema = require('../models/card');
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require('../utils/errors');
+const { BAD_REQUEST, NOT_FOUND, FORBIDDEN_ERROR } = require('../utils/errors');
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   cardSchema
     .find({})
     .then((cards) => res.status(200).send(cards))
-    .catch((err) => {
-      res.status(SERVER_ERROR).send({ err });
-      console.log({ message: err.message });
-    });
+    .catch(next);
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
 
@@ -24,45 +21,38 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: 'Для создания карточки переданы некорректные данные',
-        });
+        next(
+          new BAD_REQUEST('Для создания карточки переданы некорректные данные'),
+        );
       } else {
-        res.status(SERVER_ERROR).send({ err });
-        console.log({ message: err.message });
+        next(err);
       }
     });
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
 
   cardSchema
     .findByIdAndRemove(cardId)
+    .orFail(new NOT_FOUND('Карточка c данным _id не найдена.'))
     .then((card) => {
-      if (!card) {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: 'Карточка c данным _id не найдена.' });
+      if (card.owner.toString() !== req.user._id) {
+        return next(
+          new FORBIDDEN_ERROR(
+            'Отказано в доступе! Данная карточка принадлежит другому пользователю!',
+          ),
+        );
       }
 
-      return res.status(200).send(card);
+      return cardSchema
+        .deleteOne(card)
+        .then(() => res.status(200).send({ message: 'Карточка успешно удалена!' }));
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).send({
-          message: "'Карточка c данным _id не найдена.",
-        });
-      }
-
-      return res
-        .status(SERVER_ERROR)
-        .send({ err })
-        .console.log({ message: err.message });
-    });
+    .catch(next);
 };
 
-module.exports.addLike = (req, res) => {
+module.exports.addLike = (req, res, next) => {
   cardSchema
     .findByIdAndUpdate(
       req.params.cardId,
@@ -71,28 +61,23 @@ module.exports.addLike = (req, res) => {
     )
     .then((card) => {
       if (!card) {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: 'Карточка c данным _id не найдена.' });
+        return next(new NOT_FOUND('Карточка c данным _id не найдена.'));
       }
 
       return res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).send({
-          message: 'Для установки лайка переданы некорректные данные.',
-        });
+        return next(
+          new BAD_REQUEST('Для установки лайка переданы некорректные данные.'),
+        );
       }
 
-      return res
-        .status(SERVER_ERROR)
-        .send({ err })
-        .console.log({ message: err.message });
+      return next(err);
     });
 };
 
-module.exports.deleteLike = (req, res) => {
+module.exports.deleteLike = (req, res, next) => {
   cardSchema
     .findByIdAndUpdate(
       req.params.cardId,
@@ -101,23 +86,16 @@ module.exports.deleteLike = (req, res) => {
     )
     .then((card) => {
       if (!card) {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: 'Карточка c данным _id не найдена.' });
+        return next(new NOT_FOUND('Карточка c данным _id не найдена.'));
       }
-
       return res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).send({
-          message: "Для удаления 'лайка' переданы некорректные данные.",
-        });
+        return next(
+          new BAD_REQUEST("Для удаления 'лайка' переданы некорректные данные."),
+        );
       }
-
-      return res
-        .status(SERVER_ERROR)
-        .send({ err })
-        .console.log({ message: err.message });
+      return next(err);
     });
 };
