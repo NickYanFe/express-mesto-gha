@@ -1,5 +1,6 @@
 const isURL = require('validator/lib/isURL');
-const { celebrate, Joi } = require('celebrate');
+const isEmail = require('validator/lib/isEmail');
+const { Joi, celebrate } = require('celebrate');
 
 const BAD_REQUEST = require('../errors/BAD_REQUEST');
 
@@ -9,6 +10,14 @@ const validationUrl = (url) => {
     return url;
   }
   throw new BAD_REQUEST('Некорректный URL');
+};
+
+const validationEmail = (email) => {
+  const validate = isEmail(email);
+  if (validate) {
+    return email;
+  }
+  throw new BAD_REQUEST('Некорректный email');
 };
 
 const validationId = (id) => {
@@ -21,7 +30,7 @@ module.exports.validationCreateUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    email: Joi.string().required().email(),
+    email: Joi.string().required().custom(validationEmail),
     avatar: Joi.string().custom(validationUrl),
     password: Joi.string().required(),
   }),
@@ -29,7 +38,7 @@ module.exports.validationCreateUser = celebrate({
 
 module.exports.validationLogin = celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
+    email: Joi.string().required().custom(validationEmail),
     password: Joi.string().required(),
   }),
 });
