@@ -37,12 +37,12 @@ module.exports.deleteCard = (req, res, next) => {
 
   cardSchema
     .findByIdAndRemove(cardId)
-    .orFail(new BAD_REQUEST('Карточка c данным _id не найдена.'))
+    .orFail(new NOT_FOUND('Карточка c данным _id не найдена.'))
     .then((card) => {
       if (card.owner.toString() !== req.user._id) {
         return next(
           new FORBIDDEN_ERROR(
-            'Отказано в доступе! Данная карточка принадлежит другому пользователю!',
+            'Данная карточка принадлежит другому пользователю и не может быть удалена',
           ),
         );
       }
