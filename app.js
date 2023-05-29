@@ -28,13 +28,6 @@ app.use(router);
 app.use(errors());
 app.use(handleErrors);
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '6457c7247dc45d29ea3e24ba',
-//   };
-//   next();
-// });
-
 async function start() {
   try {
     await mongoose.connect(baseMongoUrl);

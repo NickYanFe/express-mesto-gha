@@ -1,12 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); // импортируем модуль jsonwebtoken
 const userSchema = require('../models/user');
-const {
-  BAD_REQUEST,
-  NOT_FOUND,
-  // SERVER_ERROR,
-  CONFLICT_ERROR,
-} = require('../utils/errors');
+const BAD_REQUEST = require('../errors/BAD_REQUEST');
+const NOT_FOUND = require('../errors/NOT_FOUND');
+const CONFLICT_ERROR = require('../errors/CONFLICT_ERROR');
 
 module.exports.getUsers = (req, res, next) => {
   userSchema
@@ -20,7 +17,6 @@ module.exports.getUserById = (req, res, next) => {
 
   userSchema
     .findById(userId)
-    .orFail()
     .then((user) => {
       if (!user) {
         throw new NOT_FOUND('Пользователь c данным _id не найден.');

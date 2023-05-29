@@ -1,5 +1,7 @@
 const cardSchema = require('../models/card');
-const { BAD_REQUEST, NOT_FOUND, FORBIDDEN_ERROR } = require('../utils/errors');
+const BAD_REQUEST = require('../errors/BAD_REQUEST');
+const NOT_FOUND = require('../errors/NOT_FOUND');
+const FORBIDDEN_ERROR = require('../errors/FORBIDDEN_ERROR');
 
 module.exports.getCards = (req, res, next) => {
   cardSchema

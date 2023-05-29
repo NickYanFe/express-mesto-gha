@@ -4,7 +4,6 @@ const {
   getUsers,
   getUser,
   getUserById,
-  // createUser,
   updateUser,
   updateAvatar,
 } = require('../controllers/users');
