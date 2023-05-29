@@ -28,8 +28,8 @@ const validationId = (id) => {
 
 module.exports.validationCreateUser = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
     email: Joi.string().required().custom(validationEmail),
     avatar: Joi.string().custom(validationUrl),
     password: Joi.string().required(),
