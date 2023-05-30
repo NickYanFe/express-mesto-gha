@@ -25,9 +25,8 @@ app.use(auth);
 
 app.use(helmet());
 app.use(router);
-app.use(handleErrors);
 app.use(errors());
-
+app.use(handleErrors);
 
 async function start() {
   try {
