@@ -22,11 +22,12 @@ app.post('/signup', validationCreateUser, createUser);
 app.post('/signin', validationLogin, login);
 
 app.use(auth);
-app.use(errors());
+
 app.use(helmet());
 app.use(router);
-
 app.use(handleErrors);
+app.use(errors());
+
 
 async function start() {
   try {
