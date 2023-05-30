@@ -1,14 +1,14 @@
 # Проект Mesto бэкенд
 Бэкенд проекта Mesto, с валидацией и авторизацией, реализован с применением:
 
-## Postman
-## eslint
-## nodemon
-## bcryptjs
-## celebrate
-## helmet 
-## joi
-## validator
+- Postman
+- eslint
+- nodemon
+- bcryptjs
+- celebrate
+- helmet 
+- joi
+- validator
 
 # Язык
 JavaScript
