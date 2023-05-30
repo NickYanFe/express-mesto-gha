@@ -7,7 +7,7 @@ const cardsRouter = require('./cards');
 router.use('/users', usersRouter);
 router.use('/cards', cardsRouter);
 router.use('/*', (req, res, next) => {
-  next(new NOT_FOUND('404: Ошибка! Данные не найдены!'));
+  next(new NOT_FOUND('Ошибка! Данные не найдены!'));
 });
 
 // router.use('/signin', login);

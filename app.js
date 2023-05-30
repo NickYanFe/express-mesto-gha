@@ -17,13 +17,13 @@ const auth = require('./middlewares/auth');
 const app = express();
 
 app.use(express.json());
+app.use(helmet());
 
 app.post('/signup', validationCreateUser, createUser);
 app.post('/signin', validationLogin, login);
 
 app.use(auth);
 
-app.use(helmet());
 app.use(router);
 app.use(errors());
 app.use(handleErrors);
