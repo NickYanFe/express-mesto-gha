@@ -1,16 +1,35 @@
-[![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
-# Проект Mesto фронтенд + бэкенд
+## Проект Mesto бэкенд
+Бэкенд проекта Mesto, с валидацией и авторизацией, реализован с применением:
+
+# Postman
+# eslint
+# nodemon
+# bcryptjs
+# celebrate
+# helmet 
+# joi
+# validator
+
+## Язык
+JavaScript
+
+## Библиотекa
+Express
+
+## База данных
+MongoDB
+
+## Директории:
+/controllers – содержит файлы описания моделей пользователя и карточки;
+/errors – содержит описание и обработчик ошибок;
+/middlewares - содержит файламы мидлвэр для авторизации и валидации;
+/models – содержит файлы описания схем пользователя и карточки;
+/routes — содержит описание основных роутов для пользователя и карточки;
 
 
-## Директории
-
-`/routes` — папка с файлами роутера  
-`/controllers` — папка с файлами контроллеров пользователя и карточки   
-`/models` — папка с файлами описания схем пользователя и карточки  
-  
-Остальные директории вспомогательные, создаются при необходимости разработчиком
+## Адрес проекта:
+https://github.com/NickYanFe/express-mesto-gha.git
 
 ## Запуск проекта
-
-`npm run start` — запускает сервер   
-`npm run dev` — запускает сервер с hot-reload
+npm run start — запускает сервер
+npm run dev — запускает сервер с hot-reload
